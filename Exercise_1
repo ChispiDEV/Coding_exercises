@@ -1,0 +1,70 @@
+# -*- coding: utf-8 -*-
+
+Original file is located at
+    https://colab.research.google.com/drive/12jSMdog1ipqDxuEBaw1gNBdV3fcjAiPl
+
+1) Definid la función **calculadora_de_pares** donde, según la operación que se indique (**sumar**, **restar**, **multiplicar** y **dividir**), el programa lleve a cabo dicha operación para cada uno de los elementos de dos listas que se encuentren en la misma posición. Evitad que el programa se interrumpa si, en el caso de la división, el divisor es 0.
+
+def calculadora_de_pares(operacion,lista1,lista2):
+    resultado=[]
+    lista_trabajo=zip(lista1,lista2)
+    for item in lista_trabajo:
+        x=item[0]
+        y=item[1]
+        if operacion == "sumar":
+            valor= x+y
+            resultado.append(valor)
+        if operacion == "restar":
+            valor= x-y
+            resultado.append(valor)
+        if operacion == "multiplicar":
+            valor= x*y
+            resultado.append(valor)
+        if operacion == "dividir":
+            try:
+                y != 0
+                valor= x/y
+                resultado.append(valor)
+            except:
+                resultado.append("No tiene resultado")
+    return resultado
+
+
+l1=[1,7,5,10,3,8]
+l2=[1,7,4,5,0,6]
+
+
+resultado_suma= calculadora_de_pares("sumar",l1,l2)
+print("Resultados suma=", resultado_suma)
+resultado_resta= calculadora_de_pares("restar",l1,l2)
+print("Resultados resta=", resultado_resta)
+resultado_multiplicacion= calculadora_de_pares("multiplicar",l1,l2)
+print("Resultados multiplicación=", resultado_multiplicacion)
+resultado_division= calculadora_de_pares("dividir",l1,l2)
+print("Resultados división=", resultado_division)
+
+2) Definid una función que tome una lista de strings ['Teclado', 'Raton', 'Pantalla', 'Tecla', 'Pixel'] y devuelva **el string que contenga un mayor número de consonantes**, el **número de caracteres que conforman dicho string** y **su índice en la lista**.
+
+def palabra_mas_consonantes(lista_palabras):
+    lista_consonantes= []
+    numero_consonantes= 0
+    numero_caracteres= 0
+    string_largo= ""
+    posicion=0
+    for palabra in lista_palabras:
+        contador= 0
+        for letra in palabra:
+            if letra not in "AEIOUaeiou":
+                contador += 1
+        if contador > numero_consonantes:
+            numero_consonantes=contador
+            string_largo=lista_palabras[posicion]
+            indice_en_lista= posicion
+            numero_caracteres=len(lista_palabras[posicion])
+        posicion +=1
+    resultado= [string_largo, numero_caracteres, indice_en_lista]
+    return resultado
+
+objetos=["Teclado","Raton","Pantalla","Tecla","Pixel"]
+respuesta2=palabra_mas_consonantes(objetos)
+print(respuesta2)

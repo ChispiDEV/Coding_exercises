@@ -1,0 +1,131 @@
+# -*- coding: utf-8 -*-
+
+Original file is located at
+    https://colab.research.google.com/drive/1g6gYe1HFaddHdvs5dzt-qJhKdXCjW_zO
+
+1) Escribid una **función que calcule la suma de los números primos hasta N**.
+"""
+
+def es_primo(n):
+    numero_primo = False
+    divisores = []
+    valores = list(range(1,n+1))
+    numero = len(valores)
+    for valor in valores:
+        if len(valores)%valor == 0:
+            divisores.append(valor)
+    if len(divisores) == 2:
+        numero_primo = True
+    return numero_primo
+
+#Ejemplo y prueba:
+print("¿Es primo el número 39? ", es_primo(39))
+print("¿Es primo el número 69? ", es_primo(69))
+
+def suma_primos(i):
+    primos_anteriores= [1,]
+    numeros = list(range(1,i+1))
+    suma_de_primos= 0
+    for numero in numeros:
+        if es_primo(numero) == True:
+            primos_anteriores.append(numero)
+    for dato in primos_anteriores:
+        suma_de_primos= suma_de_primos + dato
+    return suma_de_primos
+
+print("La suma de los primos inferiores a 20 vale", suma_primos(20))
+print("La suma de los primos inferiores a 8 vale", suma_primos(8))
+
+"""2) Tomad el archivo mbox.txt y **extraed la información** sobre todos aquellos que han enviado un correo (From), de forma que **creéis un programa capaz de reproducir vuestro propio archivo mbox_output.txt**."""
+
+import re
+import datetime
+
+with open("C:/Users/User/Desktop/Bootcamp/Módulo 1. Fundamentos de Programación/Módulo 3/mbox.txt", mode="r", encoding="utf-8") as file:
+    lista_lineas= []
+    lista_correos= []
+    usuario_dominio =[]
+    lista_fragmentada= []
+    lineas_fecha = []
+    lista_usuarios = []
+    linea_usuarios= []
+    dic_meses={"Jan":1,"Feb":2,"Mar":3,"Apr":4,"May":5,"Jun":6,"Jul":7,"Aug":8, "Sep":9, "Oct":10, "Nov":11, "Dec":12}
+    dominio= ""
+    contador = 0
+    contador2 = 0
+    contador3 = 0
+    for line in file:
+        if line.startswith("From "):
+            lista_lineas.append(line.strip())
+    for valor in lista_lineas:
+        correo= re.findall(r"\S*@\S*", valor)
+        lista_correos.extend(correo)
+        lista_fragmentada.append(re.split(r"\s+", valor.strip()))
+        dia= int(lista_fragmentada[contador][4])
+        mes= dic_meses[lista_fragmentada[contador][3]]
+        año= int(lista_fragmentada[contador][6])
+        hora= lista_fragmentada[contador][5]
+        fecha= datetime.date(año, mes, dia)
+        linea_fecha = fecha.strftime("%A, %Y-%m-%d " + hora)
+        lineas_fecha.append(linea_fecha)
+        contador= contador+ 1
+    for dato in lista_correos:
+        usuario_dominio.append(re.split("@", dato))
+        lista_usuarios.append(re.split(r"[.]", usuario_dominio[contador2][0]))
+        linea_usuarios.append(' '.join(lista_usuarios[contador2]).title().strip())
+        contador2 =contador2 +1
+    with open("C:/Users/User/Desktop/Bootcamp/Módulo 1. Fundamentos de Programación/Módulo 3/mbox_output.txt", mode="w", encoding="utf-8") as file_output:
+        for linea in lista_lineas:
+            file_output.write(linea_usuarios[contador3] +"\n")
+            file_output.write(usuario_dominio[contador3][1] +"\n")
+            file_output.write(lineas_fecha[contador3] +"\n")
+            file_output.write(lista_correos[contador3] +"\n")
+            file_output.write("-------------------------------------\n")
+            contador3 =contador3 + 1
+
+"""3) La fórmula molecular es una forma sencilla de expresar el número de átomos que conforman una molécula. **Cread la función calc_masa_mol() que tome una fórmula molecular (string) y devuelva su masa molecular**. Conseguid que funcione, por lo menos, para estos 3 casos:
+
+Metano: 'C H4'
+
+Glucosa: 'C6 H12 O6'
+
+Grupo Hemo: 'C34 H32 FE N4 O4'
+
+(El C pesa 12.011; El H pesa 1.007; El O pesa 15.999; El N pesa 14.006; El Fe pesa 55.845)
+"""
+
+def calc_masa_mol(formula):
+    import re
+    atomo= []
+    numero_atomo= []
+    num_atomo = []
+    bloque= 0
+    peso_bloque = []
+    peso_atom = {"C":12.011, "H":1.007, "O":15.999, "N":14.006, "Fe":55.845}
+    molecula= re.split(r"\s+", formula)
+    contador = 0
+    masa_mol=0
+    for item in molecula:
+        item= item+"_"
+        atomo.extend(re.findall(r"[a-zA-Z]+", item))
+        numero_atomo.extend(re.findall(r"[0-9_]+", item))
+    for valor in numero_atomo:
+        valor= valor[:-1]
+        if len(valor) > 0:
+            num_atomo.append(int(valor))
+        else:
+            num_atomo.append(int("1"))
+    for bloque in atomo:
+        peso_atomico=peso_atom[bloque.title()]
+        peso_fragmento= peso_atomico*num_atomo[contador]
+        peso_bloque.append(peso_fragmento)
+        contador= contador+1
+    for numero in peso_bloque:
+        masa_mol= masa_mol+ numero
+    return masa_mol
+
+
+print("La masa molecular del metano es ", calc_masa_mol('C H4'))
+print("La masa molecular de la glucosa es ", calc_masa_mol('C6 H12 O6'))
+print("La masa molecular del grupo hemo es ", calc_masa_mol('C34 H32 FE N4 O4'))
+print("La masa molecular del agua es ", calc_masa_mol('H2 O'))
