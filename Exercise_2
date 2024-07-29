@@ -1,0 +1,163 @@
+# -*- coding: utf-8 -*-
+
+Original file is located at
+    https://colab.research.google.com/drive/1BsO_4xU8RRBrEXTiw4bt6UhCLbG_pQzL
+
+**Descargad el archivo de la hemoglobina (1a00.pdb) y cread funciones para completar las siguientes tareas:**
+
+**1) Extraed el título y el id del archivo.**
+"""
+
+titulo = []
+ID= []
+with open("C:/Users/User/Desktop/1a00.pdb", mode="r", encoding="utf-8") as file:
+    for line in file:
+        if line.startswith("TITLE"):
+            linea= line[10:]
+            titulo.append(linea.strip())
+            titulo_string= ' '.join(titulo).strip()
+        if line.startswith("HEADER"):
+            ID.append(line[-19:-14].strip())
+
+print("Title:", titulo_string)
+print("ID:", ID)
+
+"""**2) Extraed una lista con los autores del archivo de forma que cada nombre sea un elemento de dicha lista.**"""
+
+string_autores= ""
+autores = []
+with open("C:/Users/User/Desktop/1a00.pdb", mode="r", encoding="utf-8") as file:
+    for line in file:
+        contador = 0
+        if line.startswith("JRNL") and "AUTH" in line:
+            base_string= string_autores
+            linea_autores= line[19:].strip()
+            for linea in line:
+                string_autores = base_string + linea_autores
+
+print("Autores: ", string_autores)
+
+"""**3) Respecto a la secuencia de aminoácidos, ¿cuántos hay en total? ¿y cuántos aminoácidos de cada tipo?**"""
+
+sec_aa = ""
+lista_aa= []
+num_aa = 0
+tipos_aa = dict()
+with open("C:/Users/User/Desktop/Bootcamp/Módulo 2/1A00.pdb", mode="r", encoding="utf-8") as file:
+    for line in file:
+        if line.startswith("SEQRES"):
+            lista_aa.append(line[19:].strip())
+            sec_aa = ' '.join(lista_aa).strip()
+            aa_separados= list(sec_aa.split(" "))
+            num_aa= len(aa_separados)
+            for elemento in aa_separados:
+                tipos_aa[elemento] = aa_separados.count(elemento)
+
+print("Número de aminoácidos totales: ", num_aa)
+print("Tipo de áminoácido y su número: ", tipos_aa)
+
+"""**4) Respecto a los átomos, ¿cuántos átomos hay en total? ¿cuántos de cada tipo?**"""
+
+lista_atomos= []
+num_atomos = 0
+tipos_atomos = dict()
+with open("C:/Users/User/Desktop/Bootcamp/Módulo 2/1A00.pdb", mode="r", encoding="utf-8") as file:
+    for line in file:
+        if line.startswith("ATOM") or line.startswith("HETATM"):
+            lista_atomos.append(line[-5:].strip())
+            num_atomos= len(lista_atomos)
+    for elemento in lista_atomos:
+        tipos_atomos[elemento] = tipos_atomos.get(elemento, 0) + 1
+
+
+print("Número de átomos totales: ", num_atomos)
+print("Tipo de átomo y su número: ", tipos_atomos)
+
+"""**5) Probad a descargar un segundo archivo .pdb e implementad los dos últimos programas sobre este nuevo archivo. ¿Puede ejecutarse o se genera algún problema? Haced los cambios necesarios para que vuestro programa funcione para cualquier archivo pdb.**"""
+
+def numero_y_tipo_aa(direccion_archivo):
+    sec_aa = ""
+    lista_aa= []
+    num_aa = 0
+    tipos_aa = dict()
+    with open(direccion_archivo, mode="r", encoding="utf-8") as file:
+        for line in file:
+            if line.startswith("SEQRES"):
+                lista_aa.append(line[19:].strip())
+                sec_aa = ' '.join(lista_aa).strip()
+                aa_separados= list(sec_aa.split(" "))
+                num_aa= len(aa_separados)
+                for elemento in aa_separados:
+                    tipos_aa[elemento] = aa_separados.count(elemento)
+    print("Número de aminoácidos totales: ", num_aa)
+    print("Tipo de áminoácido y su número: ", tipos_aa)
+
+def numero_y_tipo_atomos(direccion_archivo):
+    lista_atomos= []
+    num_atomos = 0
+    tipos_atomos = dict()
+    with open(direccion_archivo, mode="r", encoding="utf-8") as file:
+        for line in file:
+            if line.startswith("ATOM") or line.startswith("HETATM"):
+                lista_atomos.append(line[-5:].strip())
+                num_atomos= len(lista_atomos)
+        for elemento in lista_atomos:
+            tipos_atomos[elemento] = tipos_atomos.get(elemento, 0) + 1
+
+
+    print("Número de átomos totales: ", num_atomos)
+    print("Tipo de átomo y su número: ", tipos_atomos)
+
+prot_1= "C:/Users/User/Desktop/Bootcamp/Módulo 2/9rub.pdb"
+prot_2= "C:/Users/User/Desktop/Bootcamp/Módulo 2/3cck.pdb"
+
+aa_prot_3cck = numero_y_tipo_aa(prot_1)
+atomos_prot_3cck = numero_y_tipo_atomos(prot_1)
+aa_prot_9rub = numero_y_tipo_aa(prot_2)
+atomos_prot_9rub = numero_y_tipo_atomos(prot_2)
+
+"""Segunda forma de realizar la función.
+En este caso devolvemos en cada función las variables que incluyen los números de elementos o átomos, y, el número de cada elemento o átomo.
+"""
+
+def numero_y_tipo_aa(direccion_archivo):
+    sec_aa = ""
+    lista_aa= []
+    num_aa = 0
+    tipos_aa = dict()
+    with open(direccion_archivo, mode="r", encoding="utf-8") as file:
+        for line in file:
+            if line.startswith("SEQRES"):
+                lista_aa.append(line[19:].strip())
+                sec_aa = ' '.join(lista_aa).strip()
+                aa_separados= list(sec_aa.split(" "))
+                num_aa= len(aa_separados)
+                for elemento in aa_separados:
+                    tipos_aa[elemento] = aa_separados.count(elemento)
+    return num_aa , tipos_aa
+
+def numero_y_tipo_atomos(direccion_archivo):
+    lista_atomos= []
+    num_atomos = 0
+    tipos_atomos = dict()
+    with open(direccion_archivo, mode="r", encoding="utf-8") as file:
+        for line in file:
+            if line.startswith("ATOM") or line.startswith("HETATM"):
+                lista_atomos.append(line[-5:].strip())
+                num_atomos= len(lista_atomos)
+        for elemento in lista_atomos:
+            tipos_atomos[elemento] = tipos_atomos.get(elemento, 0) + 1
+    return num_atomos , tipos_atomos
+
+
+prot_1= "C:/Users/User/Desktop/Bootcamp/Módulo 2/9rub.pdb"
+prot_2= "C:/Users/User/Desktop/Bootcamp/Módulo 2/3cck.pdb"
+
+aa_prot_9rub = numero_y_tipo_aa(prot_1)
+print(aa_prot_9rub)
+atomos_prot_9rub = numero_y_tipo_atomos(prot_1)
+print(atomos_prot_9rub)
+aa_prot_3cck = numero_y_tipo_aa(prot_2)
+print(aa_prot_3cck)
+atomos_prot_3cck = numero_y_tipo_atomos(prot_2)
+print(atomos_prot_3cck)
